@@ -45,7 +45,7 @@ class PhishingDetectorTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "Model is not trained"):
             detector.predict("verify your account")
 
-    def test_train_requires_both_classes(self) -> None:
+    def test_train_requires_phishing_samples(self) -> None:
         detector = PhishingDetector()
         with self.assertRaisesRegex(ValueError, "must be non-empty"):
             detector.train(phishing_samples=[], legitimate_samples=["normal email"])

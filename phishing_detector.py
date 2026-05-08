@@ -7,6 +7,7 @@ from dataclasses import dataclass
 
 
 _TOKEN_PATTERN = re.compile(r"[a-z0-9]+")
+_PHISHING_THRESHOLD = 0.5
 
 
 @dataclass(frozen=True)
@@ -55,7 +56,7 @@ class PhishingDetector:
             math.exp(phishing_log_prob - max_log) + math.exp(legitimate_log_prob - max_log)
         )
         phishing_prob = math.exp(phishing_log_prob - norm)
-        label = "phishing" if phishing_prob >= 0.5 else "legitimate"
+        label = "phishing" if phishing_prob >= _PHISHING_THRESHOLD else "legitimate"
         score = phishing_prob if label == "phishing" else 1.0 - phishing_prob
         return Prediction(label=label, score=score)
 
