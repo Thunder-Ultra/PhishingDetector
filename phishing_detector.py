@@ -85,6 +85,8 @@ class PhishingDetector:
         token_counter = self._token_counts[class_name]
 
         for token in tokens:
+            if token not in self._vocabulary:
+                continue
             token_count = token_counter[token] + 1
             log_likelihood += math.log(token_count / denominator)
 

@@ -3,7 +3,7 @@ import unittest
 from phishing_detector import PhishingDetector
 
 
-class PhishingDetectorTests(unittest.TestCase):
+class TestPhishingDetector(unittest.TestCase):
     def test_predict_phishing_text(self) -> None:
         detector = PhishingDetector()
         detector.train(
