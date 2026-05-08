@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PhishGuard</title>
+  <link rel="stylesheet" href="popup.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div class="shell">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <div class="logo-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.25C17.25 22.15 21 17.25 21 12V7L12 2z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="logo-text">PhishGuard</span>
+      </div>
+      <div class="version-tag">v1.0</div>
+    </header>
+
+    <!-- URL Display -->
+    <div class="url-box">
+      <div class="url-label">ANALYZING</div>
+      <div class="url-text" id="urlDisplay">Loading current tab...</div>
+    </div>
+
+    <!-- Main Result Card -->
+    <div class="result-card" id="resultCard">
+      <div class="scan-state" id="scanState">
+        <div class="scan-ring">
+          <div class="scan-pulse"></div>
+          <svg class="scan-icon" viewBox="0 0 24 24" fill="none">
+            <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
+            <path d="m21 21-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <p class="scan-text">Scanning URL...</p>
+      </div>
+
+      <div class="result-state hidden" id="resultState">
+        <!-- Status Icon -->
+        <div class="status-icon-wrap" id="statusIconWrap">
+          <div class="status-icon" id="statusIcon">
+            <!-- injected by JS -->
+          </div>
+        </div>
+
+        <!-- Verdict -->
+        <div class="verdict" id="verdict">—</div>
+        <div class="verdict-sub" id="verdictSub">—</div>
+
+        <!-- Confidence Meter -->
+        <div class="meter-wrap">
+          <div class="meter-labels">
+            <span class="meter-label">Confidence</span>
+            <span class="meter-value" id="confidenceValue">—</span>
+          </div>
+          <div class="meter-track">
+            <div class="meter-fill" id="meterFill"></div>
+          </div>
+        </div>
+
+        <!-- Feature Breakdown (optional detail) -->
+        <div class="features" id="featureList"></div>
+      </div>
+
+      <div class="error-state hidden" id="errorState">
+        <div class="error-icon">⚠</div>
+        <p class="error-text" id="errorText">Could not reach analysis server.</p>
+        <button class="retry-btn" id="retryBtn">Retry</button>
+      </div>
+    </div>
+
+    <!-- Scan Button -->
+    <button class="scan-btn" id="scanBtn">
+      <span class="scan-btn-text">Run Analysis</span>
+      <svg class="scan-btn-arrow" viewBox="0 0 16 16" fill="none">
+        <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    <footer class="footer">ML-powered · Random Forest · Lexical Analysis</footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

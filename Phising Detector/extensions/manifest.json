@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "PhishGuard — URL Threat Detector",
+  "version": "1.0.0",
+  "description": "Real-time phishing detection powered by Machine Learning. Analyzes URLs instantly.",
+  "permissions": [
+    "activeTab",
+    "tabs"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "host_permissions": [
+    "http://localhost:5000/*"
+  ]
+}
