@@ -39,6 +39,8 @@ class PhishingDetector:
         self._reset()
         self._fit_class("phishing", phishing_samples)
         self._fit_class("legitimate", legitimate_samples)
+        if not self._vocabulary:
+            raise ValueError("Training samples must include at least one alphanumeric token.")
         self._is_trained = True
 
     def predict(self, text: str) -> Prediction:
@@ -75,7 +77,7 @@ class PhishingDetector:
     def _log_posterior(self, class_name: str, tokens: list[str]) -> float:
         total_docs = self._doc_counts["phishing"] + self._doc_counts["legitimate"]
         log_prior = math.log(self._doc_counts[class_name] / total_docs)
-        vocab_size = max(len(self._vocabulary), 1)
+        vocab_size = len(self._vocabulary)
         class_total_tokens = self._total_tokens[class_name]
         denominator = class_total_tokens + vocab_size
         log_likelihood = 0.0
