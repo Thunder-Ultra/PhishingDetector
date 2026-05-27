@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>PhishGuard — Threat Blocked</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:#06080e; --s1:#0b0e19; --s2:#10141f; --s3:#151a28; --border:#1a2035;
+      --text:#d8e0f0; --muted:#4e5c7a; --dim:#252e45;
+      --font:'Syne',sans-serif; --mono:'IBM Plex Mono',monospace;
+      --ac:#ff4040; --as:rgba(255,64,64,0.08); --ab:rgba(255,64,64,0.24);
+    }
+    html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);overflow:hidden}
+    body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(255,255,255,.012) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.012) 1px,transparent 1px);background-size:52px 52px}
+    .bg-layer{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+    .orb{position:absolute;border-radius:50%;filter:blur(100px)}
+    #o1{width:550px;height:550px;background:var(--ac);opacity:.055;top:-120px;left:50%;transform:translateX(-50%);animation:orb 9s ease-in-out infinite}
+    #o2{width:280px;height:280px;background:var(--ac);opacity:.04;bottom:15%;right:8%;animation:orb 11s ease-in-out infinite reverse}
+    @keyframes orb{0%,100%{transform:translateX(-50%) scale(1)}50%{transform:translateX(-50%) scale(1.08)}}
+    .page{position:relative;z-index:1;height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+    .card{width:100%;max-width:620px;background:var(--s1);border:1px solid var(--ab);border-radius:24px;overflow:hidden;box-shadow:0 0 0 1px var(--ab),0 40px 100px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.03);animation:rise .38s cubic-bezier(.22,.68,0,1.18) both}
+    @keyframes rise{from{opacity:0;transform:scale(.93) translateY(20px)}to{opacity:1;transform:none}}
+    .bar{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border);background:var(--s2)}
+    .brand{display:flex;align-items:center;gap:9px}
+    .shield{width:30px;height:30px;background:linear-gradient(140deg,#0d2260,#2855c8);border-radius:7px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 14px rgba(40,85,200,.35)}
+    .brand-name{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:1.2px;text-transform:uppercase;font-family:var(--mono)}
+    .tag{display:flex;align-items:center;gap:6px;padding:4px 12px;border-radius:99px;background:var(--as);border:1px solid var(--ab);font-size:10px;font-weight:700;color:var(--ac);letter-spacing:.8px;text-transform:uppercase;font-family:var(--mono)}
+    .tag-dot{width:5px;height:5px;border-radius:50%;background:var(--ac);animation:blink 1.5s ease-in-out infinite}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
+    .body{padding:28px 24px 24px}
+    .hero{display:flex;flex-direction:column;align-items:center;margin-bottom:22px}
+    .icon-stack{position:relative;width:88px;height:88px;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+    .ring{position:absolute;border-radius:50%;border:1px solid var(--ac)}
+    .ring.r1{inset:0;opacity:.5;animation:expand 2.4s ease-out infinite}
+    .ring.r2{inset:-11px;opacity:.2;animation:expand 2.4s ease-out infinite .65s}
+    .ring.r3{inset:-22px;opacity:.08;animation:expand 2.4s ease-out infinite 1.3s}
+    @keyframes expand{0%{transform:scale(1);opacity:.5}100%{transform:scale(1.12);opacity:0}}
+    .icon-bg{width:88px;height:88px;border-radius:50%;background:var(--as);border:2px solid var(--ab);display:flex;align-items:center;justify-content:center;font-size:38px;box-shadow:0 0 50px var(--as)}
+    .hero-title{font-size:28px;font-weight:800;letter-spacing:-.5px;color:var(--ac);margin-bottom:8px;text-align:center}
+    .hero-sub{font-size:13px;color:var(--muted);text-align:center;line-height:1.6;max-width:400px}
+    .panels{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:10px}
+    .panel{background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:13px 15px}
+    .panel-full{grid-column:1/-1}
+    .lbl{font-size:8px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-family:var(--mono);margin-bottom:7px}
+    .conf-row{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:9px}
+    .conf-big{font-size:36px;font-weight:700;color:var(--ac);letter-spacing:-2px;line-height:1;font-family:var(--mono)}
+    .risk{font-size:10px;font-weight:600;padding:3px 9px;border-radius:5px;background:var(--as);color:var(--ac);border:1px solid var(--ab);font-family:var(--mono);margin-bottom:3px}
+    .bar-track{height:5px;background:var(--s3);border-radius:99px;overflow:hidden}
+    .bar-fill{height:100%;border-radius:99px;width:0%;background:linear-gradient(90deg,#7f0000,#ff4040,#ff9c9c);transition:width .9s cubic-bezier(.4,0,.2,1);box-shadow:0 0 10px rgba(255,64,64,.45)}
+    .cls-label{font-size:20px;font-weight:800;color:var(--ac);letter-spacing:.4px;margin-bottom:3px}
+    .cls-sub{font-size:11px;color:var(--muted);line-height:1.5}
+    .url-box{font-family:var(--mono);font-size:10.5px;color:#5c84cc;word-break:break-all;background:var(--s3);border-radius:7px;padding:9px 11px;line-height:1.6;border:1px solid var(--border)}
+    .reason-panel{background:var(--s2);border:1px solid var(--ab);border-radius:12px;padding:14px 16px;margin-bottom:10px;position:relative;overflow:hidden}
+    .reason-panel::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ac);border-radius:2px 0 0 2px}
+    .reason-header{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+    .reason-title{font-size:9px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(--muted);font-family:var(--mono)}
+    .ai-badge{font-size:8px;font-weight:600;letter-spacing:1px;color:var(--ac);background:var(--as);border:1px solid var(--ab);border-radius:4px;padding:1px 6px;font-family:var(--mono)}
+    .reason-text{font-size:13px;color:var(--text);line-height:1.7;font-weight:400}
+    .actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}
+    .btn-safe{padding:13px 18px;border-radius:10px;background:var(--s2);border:1px solid rgba(40,85,200,0.45);color:#7a9ae8;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.2px}
+    .btn-safe:hover{background:rgba(40,85,200,0.12);border-color:#2855c8;color:#a8c0ff}
+    .btn-proceed{padding:13px 18px;border-radius:10px;background:var(--as);border:1px solid rgba(255,64,64,0.32);color:#ff7070;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.2px}
+    .btn-proceed:hover{background:rgba(255,64,64,0.16);border-color:rgba(255,64,64,.55);color:#ffaaaa}
+    .foot{display:flex;align-items:center;justify-content:space-between;padding:11px 24px;border-top:1px solid var(--border);background:var(--s2)}
+    .foot-txt{font-size:9px;color:var(--dim);font-family:var(--mono)}
+    .foot-badge{font-size:8px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted);background:var(--s3);border:1px solid var(--border);padding:3px 9px;border-radius:5px;font-family:var(--mono)}
+  </style>
+</head>
+<body>
+<div class="bg-layer">
+  <div class="orb" id="o1"></div>
+  <div class="orb" id="o2"></div>
+</div>
+<div class="page">
+  <div class="card">
+    <div class="bar">
+      <div class="brand">
+        <div class="shield">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.25C17.25 22.15 21 17.25 21 12V7L12 2z" stroke="white" stroke-width="2" stroke-linejoin="round" fill="rgba(255,255,255,0.12)"/>
+            <path d="M9 12l2 2 4-4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="brand-name">PhishGuard</span>
+      </div>
+      <div class="tag"><div class="tag-dot"></div><span id="tagText">THREAT BLOCKED</span></div>
+    </div>
+    <div class="body">
+      <div class="hero">
+        <div class="icon-stack">
+          <div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div>
+          <div class="icon-bg" id="iconBg">🚨</div>
+        </div>
+        <div class="hero-title" id="heroTitle">PHISHING DETECTED</div>
+        <div class="hero-sub" id="heroSub">This site has been flagged by our Random Forest model and blocked to protect your data.</div>
+      </div>
+      <div class="panels">
+        <div class="panel">
+          <div class="lbl">Threat Confidence</div>
+          <div class="conf-row">
+            <div class="conf-big" id="confBig">—</div>
+            <div class="risk" id="confRisk">HIGH</div>
+          </div>
+          <div class="bar-track"><div class="bar-fill" id="barFill"></div></div>
+        </div>
+        <div class="panel">
+          <div class="lbl">Classification</div>
+          <div class="cls-label">PHISHING</div>
+          <div class="cls-sub">Random Forest · 6 features</div>
+        </div>
+        <div class="panel panel-full">
+          <div class="lbl">Blocked URL</div>
+          <div class="url-box" id="urlBox">Loading…</div>
+        </div>
+      </div>
+      <div class="reason-panel">
+        <div class="reason-header">
+          <span class="reason-title">Why it was blocked</span>
+          <span class="ai-badge">AI EXPLANATION</span>
+        </div>
+        <p class="reason-text" id="reasonText">Analysing threat signals…</p>
+      </div>
+      <div class="actions">
+        <button class="btn-safe" id="btnBack">← Go Back to Safety</button>
+        <button class="btn-proceed" id="btnProceed">Proceed Anyway →</button>
+      </div>
+    </div>
+    <div class="foot">
+      <span class="foot-txt">PhishGuard v5.0 · Explainable AI · Random Forest</span>
+      <span class="foot-badge">ML Protected</span>
+    </div>
+  </div>
+</div>
+<script src="blocked.js"></script>
+</body>
+</html>

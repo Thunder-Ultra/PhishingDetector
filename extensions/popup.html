@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>PhishGuard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="popup.css"/>
+</head>
+<body>
+  <div class="shell">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="brand">
+        <div class="brand-mark">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.25C17.25 22.15 21 17.25 21 12V7L12 2z"
+              stroke="white" stroke-width="2" stroke-linejoin="round" fill="rgba(255,255,255,0.15)"/>
+            <path d="M9 12l2 2 4-4" stroke="white" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="brand-name">PhishGuard</span>
+      </div>
+      <div class="status-pill">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="statusText">Scanning…</span>
+      </div>
+    </header>
+
+    <!-- URL Strip -->
+    <div class="url-strip">
+      <span class="url-icon">🔗</span>
+      <div class="url-val" id="urlVal">Loading…</div>
+    </div>
+
+    <!-- ── SCANNING STATE ── -->
+    <div class="state-panel" id="stateScanning">
+      <div class="scan-wrap">
+        <div class="scan-anim">
+          <div class="scan-ring r1"></div>
+          <div class="scan-ring r2"></div>
+          <div class="scan-ring r3"></div>
+          <div class="scan-core">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <circle cx="11" cy="11" r="7" stroke="#4f8ef7" stroke-width="1.5"/>
+              <path d="m19 19-3.5-3.5" stroke="#4f8ef7" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+        <p class="scan-label">Analysing URL…</p>
+        <p class="scan-sub">Random Forest · 6 feature extraction</p>
+      </div>
+    </div>
+
+    <!-- ── RESULT STATE ── -->
+    <div class="state-panel hidden" id="stateResult">
+
+      <!-- Verdict row -->
+      <div class="verdict-row">
+        <div class="verdict-icon-wrap" id="verdictIcon">✓</div>
+        <div class="verdict-text">
+          <div class="verdict-label" id="verdictLabel">SAFE</div>
+          <div class="verdict-desc"  id="verdictDesc">No threats detected</div>
+        </div>
+      </div>
+
+      <!-- Confidence -->
+      <div class="conf-block">
+        <div class="conf-top">
+          <span class="conf-title">Confidence</span>
+          <span class="conf-num" id="confNum">—</span>
+        </div>
+        <div class="conf-track">
+          <div class="conf-bar" id="confBar"></div>
+        </div>
+      </div>
+
+      <!-- AI Reason — the explainability panel -->
+      <div class="reason-panel" id="reasonPanel">
+        <div class="reason-label">Why</div>
+        <p class="reason-text" id="reasonText"></p>
+      </div>
+
+    </div>
+
+    <!-- ── ERROR STATE ── -->
+    <div class="state-panel hidden" id="stateError">
+      <div class="err-wrap">
+        <div class="err-icon">⚠</div>
+        <p class="err-msg" id="errMsg">Cannot connect to scan server at 127.0.0.1:5000.</p>
+      </div>
+    </div>
+
+    <!-- Re-scan -->
+    <button class="rescan-btn" id="rescanBtn">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M3 3v5h5" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Re-scan this page
+    </button>
+
+    <footer class="footer">Random Forest · 6 features · Dots · Slashes · @ · Length · Domain Age · Keywords</footer>
+
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
