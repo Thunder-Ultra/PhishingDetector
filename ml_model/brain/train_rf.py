@@ -25,6 +25,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 
 print("3. Training the Random Forest AI...")
+print("Training Features Order:", X_train.columns.tolist())
 model = RandomForestClassifier(n_estimators=100, random_state=42)
 model.fit(X_train, y_train)
 
