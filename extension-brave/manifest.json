@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "PhishGuard V2 - Brave Shield",
+  "version": "2.1",
+  "description": "Proactive AI-powered phishing detection for Brave Browser.",
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "storage"
+  ],
+  "host_permissions": [
+    "http://127.0.0.1:5000/*",
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  }
+}

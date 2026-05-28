@@ -1,0 +1,58 @@
+document.addEventListener('DOMContentLoaded', async () => {
+    const statusEl = document.getElementById("status");
+    const reasonEl = document.getElementById("reason");
+    const urlEl = document.getElementById("scanned-url");
+    const confBar = document.getElementById("confidence-bar");
+    const confValue = document.getElementById("confidence-value");
+    const badgeEl = document.getElementById("badge-status");
+    const iconContainer = document.getElementById("icon-container");
+    const brandDot = document.querySelector(".brand .dot");
+    const reportBtn = document.getElementById("btn-report");
+    const backBtn = document.getElementById("btn-back");
+
+    reportBtn.addEventListener('click', () => { alert("Reported to retraining queue."); });
+    backBtn.addEventListener('click', () => { window.close(); });
+
+    try {
+        // Use Firefox browser.* API
+        let tabs = await browser.tabs.query({ active: true, currentWindow: true });
+        let currentUrl = tabs[0].url;
+        
+        // Firefox uses moz-extension:// for its internal pages
+        if (currentUrl.startsWith("moz-extension://") || currentUrl.startsWith("about:")) {
+            urlEl.innerText = "Internal Firefox Page";
+            statusEl.innerText = "System Page";
+            return;
+        }
+
+        urlEl.innerText = currentUrl;
+
+        let response = await fetch('http://127.0.0.1:5000/predict', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url: currentUrl })
+        });
+        
+        let data = await response.json();
+
+        confBar.style.width = data.confidence + "%";
+        confValue.innerText = data.confidence + "%";
+        reasonEl.innerText = data.reason;
+
+        if (data.result === "safe") {
+            statusEl.innerText = "✅ Safe Website";
+            statusEl.style.color = "#16a34a"; 
+            badgeEl.innerText = "SAFE";
+            badgeEl.style.borderColor = "#16a34a";
+            badgeEl.style.color = "#16a34a";
+            confBar.style.backgroundColor = "#16a34a";
+            iconContainer.style.color = "#16a34a";
+            brandDot.style.backgroundColor = "#16a34a";
+            backBtn.innerText = "Continue Browsing";
+            backBtn.style.background = "linear-gradient(90deg, #16a34a, #15803d)";
+        }
+    } catch (error) {
+        statusEl.innerText = "Connection Error";
+        reasonEl.innerText = "Ensure Flask backend is running at http://127.0.0.1:5000";
+    }
+});

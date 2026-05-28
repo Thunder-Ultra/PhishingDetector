@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PhishGuard - Website Blocked</title>
+    <link rel="stylesheet" href="popup.css">
+    <style>
+        /* Forces the UI to take up the entire Brave Browser window */
+        body {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
+        .card {
+            width: 500px;
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="background-grid"></div>
+    
+    <div class="card" id="main-card">
+        <div class="header">
+            <div class="brand"><span class="dot"></span> PHISHGUARD</div>
+            <div class="badge" id="badge-status">BLOCKED</div>
+        </div>
+
+        <div class="icon-container" id="icon-container">
+            <svg id="siren-icon" viewBox="0 0 24 24" fill="currentColor" width="32" height="32">
+                <path d="M12 2a4 4 0 0 0-4 4v2H6a2 2 0 0 0-2 2v2h16v-2a2 2 0 0 0-2-2h-2V6a4 4 0 0 0-4-4zm0 2a2 2 0 0 1 2 2v2h-4V6a2 2 0 0 1 2-2zm-8 8v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6H4z"/>
+            </svg>
+        </div>
+
+        <h1 id="status">🚨 PHISHING DETECTED</h1>
+        <p id="reason">Loading AI reason...</p>
+
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-label">THREAT CONFIDENCE</span>
+                <span class="confidence-value" id="confidence-value">--%</span>
+            </div>
+            <div class="progress-bg">
+                <div class="progress-bar" id="confidence-bar"></div>
+            </div>
+        </div>
+
+        <div class="section-container">
+            <div class="section-label" id="url-label">BLOCKED URL</div>
+            <div class="url-box" id="scanned-url">...</div>
+        </div>
+
+        <div class="actions">
+            <button class="btn-primary" id="btn-back">← Go Back to Safety</button>
+            <button class="btn-secondary" id="btn-proceed">Proceed Anyway</button>
+        </div>
+
+        <div class="footer">PhishGuard v2.0 · ML-Powered · XGBoost · Lexical Analysis</div>
+    </div>
+
+    <script src="block.js"></script>
+</body>
+</html>
