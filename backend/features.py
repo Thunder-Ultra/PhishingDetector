@@ -3,97 +3,122 @@ import whois
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
+import math
+from collections import Counter
+import ipaddress
 
 
-def extract_features(url):
+def calculate_entropy(text):
+    """Calculates Shannon Entropy (randomness) of a string."""
+    if not text:
+        return 0
+    entropy = 0
+    for x in Counter(text).values():
+        p_x = float(x) / len(text)
+        entropy += -p_x * math.log2(p_x)
+    return round(entropy, 3)
+
+
+def extract_live_features(url):
+    """
+    Extracts the 10 V2 features for the XGBoost model and generates a UI reason.
+    """
     parsed_url = urllib.parse.urlparse(url)
     domain = parsed_url.netloc
     path = parsed_url.path
-    print("PATH USED FOR CHECKING :", path)
 
-    # --- 1. Dots ---
-    dots_count = domain.count(".")
-    dots_flagged = dots_count >= 3
-    dots_name = f"Dots in domain: {dots_count}" + (" (high)" if dots_flagged else "")
+    # --- 1. length ---
+    length = len(url)
 
-    # --- 2. Forward Slash ---
-    slashes_count = max(0, path.count("/") - 1)
-    slashes_flagged = slashes_count >= 4
-    slashes_name = f"Path depth: {slashes_count} slashes" + (
-        " (deep)" if slashes_flagged else ""
-    )
+    # --- 2. dots ---
+    dots = domain.count(".")
 
-    # --- 3. '@' Symbol (NEW) ---
-    # Phishers use @ to hide the real domain (e.g., https://paypal.com@evil.xyz)
-    at_count = url.count("@")
-    at_flagged = at_count > 0
-    at_name = f"'@' symbols: {at_count}" + (" (suspicious)" if at_flagged else "")
+    # --- 3. slashes ---
+    slashes = max(0, path.count("/") - 1)
 
-    # --- 4. Length ---
-    url_length = len(url)
-    length_flagged = url_length > 75
-    length_name = f"URL length: {url_length} chars" + (
-        " (long)" if length_flagged else ""
-    )
+    # --- 4. at_symbol ---
+    at_symbol = url.count("@")
 
-    # --- 5. Domain Age ---
-    domain_age_days = -1
+    # --- 5. entropy ---
+    entropy = calculate_entropy(url)
+
+    # --- 6. subdomain_depth ---
+    clean_domain = domain.replace("www.", "")
+    subdomain_depth = max(0, clean_domain.count(".") - 1)
+
+    # --- 7. has_hyphen ---
+    has_hyphen = 1 if "-" in domain else 0
+
+    # --- 8. is_ip ---
+    is_ip = 0
+    try:
+        # Strip port numbers if present (e.g., 192.168.1.1:8080)
+        ip_str = domain.split(":")[0]
+        ipaddress.ip_address(ip_str)
+        is_ip = 1
+    except ValueError:
+        pass
+
+    # --- 9. domain_age ---
+    domain_age = -1
     try:
         w = whois.whois(domain)
         creation_date = w.creation_date
         if isinstance(creation_date, list):
             creation_date = creation_date[0]
         if creation_date:
-            domain_age_days = (datetime.now() - creation_date).days
+            domain_age = (datetime.now() - creation_date).days
     except Exception:
-        pass  # Silently fail and leave as -1
+        pass  # Hidden or dead
 
-    if domain_age_days == -1:
-        age_name = "Domain age: Unknown (hidden)"
-        age_flagged = True
-    else:
-        age_flagged = domain_age_days < 30
-        age_name = f"Domain age: {domain_age_days} days" + (
-            " (new)" if age_flagged else ""
-        )
-
-    # --- 6. Keyword Count ---
-    keywords = ["login", "password", "verify", "account"]
-    keyword_count = 0
+    # --- 10. keyword_count ---
+    keywords = ["login", "password", "verify", "account", "update", "secure"]
+    keyword_count = -1  # Default to -1 (dead) as requested
     try:
         response = requests.get(url, timeout=3)
-        soup = BeautifulSoup(response.text, "html.parser")
-        text = soup.get_text().lower()
-        for kw in keywords:
-            keyword_count += text.count(kw)
+        if response.status_code == 200:
+            keyword_count = 0  # Site is alive, reset to 0
+            soup = BeautifulSoup(response.text, "html.parser")
+            text = soup.get_text().lower()
+            for kw in keywords:
+                keyword_count += text.count(kw)
     except Exception:
-        pass  # Silently fail and leave as 0
+        pass
 
-    kw_flagged = keyword_count > 0
-    kw_name = (
-        f"Keywords found x{keyword_count}" if kw_flagged else "No suspicious keywords"
-    )
-
-    # --- BUILD THE UI ARRAY ---
-    # The frontend will dynamically render these 6 chips
-    ui_features = [
-        {"name": dots_name, "flagged": dots_flagged},
-        {"name": slashes_name, "flagged": slashes_flagged},
-        {"name": at_name, "flagged": at_flagged},
-        {"name": length_name, "flagged": length_flagged},
-        {"name": age_name, "flagged": age_flagged},
-        {"name": kw_name, "flagged": kw_flagged},
-    ]
-
-    # --- BUILD THE ML VECTOR ---
-    # STRICT ORDER: Dots, Forward Slash, @, Length, Domain Age, Keyword Count
+    # --- BUILD THE ML VECTOR (Strict Order!) ---
     ml_vector = [
-        dots_count,
-        slashes_count,
-        at_count,
-        url_length,
-        domain_age_days,
+        length,
+        dots,
+        slashes,
+        at_symbol,
+        entropy,
+        subdomain_depth,
+        has_hyphen,
+        is_ip,
+        domain_age,
         keyword_count,
     ]
 
-    return ml_vector, ui_features
+    # --- GENERATE EXPLAINABLE AI REASON ---
+    reasons = []
+    if entropy > 4.5:
+        reasons.append("High URL entropy (randomness)")
+    if domain_age == -1:
+        reasons.append("Domain Age is -1 (Hidden/Dead)")
+    elif domain_age < 30:
+        reasons.append(f"Domain is very new ({domain_age} days)")
+    if is_ip == 1:
+        reasons.append("URL uses a raw IP address instead of a domain name")
+    if keyword_count > 0:
+        reasons.append("Suspicious login keywords found on page")
+    if at_symbol > 0:
+        reasons.append("Contains '@' symbol to hide true destination")
+
+    if reasons:
+        reason_str = " and ".join(reasons) + "."
+        # Capitalize first letter
+        reason_str = reason_str[0].upper() + reason_str[1:]
+    else:
+        reason_str = "This site appears to be legitimate based on current metrics."
+
+    return ml_vector, reason_str
