@@ -6,7 +6,7 @@ import os
 import json
 import warnings
 
-# Import the new V2 extraction logic
+# Import the V2 extraction logic
 import features
 
 warnings.filterwarnings("ignore", message="X does not have valid feature names")
@@ -65,14 +65,16 @@ def predict():
         # -------------------
 
         # 2. Make prediction
-        # XGBoost via scikit-learn API uses predict_proba just like RandomForest
         probabilities = model.predict_proba([ml_vector])[0]
-        phish_prob = probabilities[1] * 100
-        confidence = round(float(max(probabilities) * 100), 1)
 
-        # 3. Determine result (Frontend handles the "suspicious" tier now)
-        if phish_prob >= 50.0:
+        # Threat confidence is strictly the probability of Class 1 (Phishing)
+        threat_confidence = round(float(probabilities[1] * 100), 1)
+
+        # 3. Determine 3-Tier Result based on Threat Confidence
+        if threat_confidence >= 75.0:
             result = "phishing"
+        elif threat_confidence >= 40.0:
+            result = "suspicious"
         else:
             result = "safe"
 
@@ -80,7 +82,7 @@ def predict():
         response_data = {
             "url": raw_url,
             "result": result,
-            "confidence": confidence,
+            "confidence": threat_confidence,
             "reason": reason_str,
         }
 
