@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         
         let ai_verdict = data.result;
-        let ai_verdict = data.result; 
+        
         let ai_confidence = data.confidence; 
 
         confBar.style.width = ai_confidence + "%";

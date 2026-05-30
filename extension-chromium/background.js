@@ -3,7 +3,7 @@ let whitelistedUrls = new Set();
 
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
     // Only scan when the URL changes and it is a real website (http/https)
-    if (changeInfo.status === 'loading' && tab.url.startsWith('http')) {
+    if (changeInfo.status === 'loading' && tab.url && tab.url.startsWith('http')) {
         let currentUrl = tab.url;
 
         // Check session storage instead of the volatile Set
