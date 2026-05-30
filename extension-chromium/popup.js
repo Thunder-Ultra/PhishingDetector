@@ -85,6 +85,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Inside popup.js, replace the updateUI function with this:
 
     function updateUI(data) {
+                if (data.error) {
+            statusEl.innerText = "Backend Error";
+            reasonEl.innerText = data.error;
+            return;
+        }
+        
+        let ai_verdict = data.result;
         let ai_verdict = data.result; 
         let ai_confidence = data.confidence; 
 
