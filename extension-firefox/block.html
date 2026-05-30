@@ -5,7 +5,7 @@
     <title>PhishGuard - Website Blocked</title>
     <link rel="stylesheet" href="popup.css">
     <style>
-        /* Forces the UI to take up the entire Brave Browser window */
+        /* Forces the UI to take up the entire desktop screen */
         body {
             width: 100vw;
             height: 100vh;
@@ -16,8 +16,8 @@
             padding: 0;
         }
         .card {
-            width: 500px;
-            transform: scale(1.1);
+            width: 500px; /* Slightly wider for the full screen */
+            transform: scale(1.1); /* Makes it pop out more */
         }
     </style>
 </head>
@@ -57,6 +57,7 @@
         <div class="actions">
             <button class="btn-primary" id="btn-back">← Go Back to Safety</button>
             <button class="btn-secondary" id="btn-proceed">Proceed Anyway</button>
+            <button class="btn-secondary" id="btn-report" style="flex-basis: 100%;">Report as Safe (False Positive)</button>
         </div>
 
         <div class="footer">PhishGuard v2.0 · ML-Powered · XGBoost · Lexical Analysis</div>

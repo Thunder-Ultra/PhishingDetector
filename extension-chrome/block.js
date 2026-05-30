@@ -56,4 +56,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Tell background.js to whitelist this URL and redirect back to it
         chrome.runtime.sendMessage({ action: "whitelist", url: blockedUrl });
     });
+
+    document.getElementById("btn-report").addEventListener('click', () => {
+        alert("Reported to retraining queue. Thank you!");
+        chrome.runtime.sendMessage({ action: "report", url: blockedUrl });
+    });
 });

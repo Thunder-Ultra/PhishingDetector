@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "PhishGuard V2 - Auto Shield",
-  "version": "2.1",
+  "version": "2.2",
   "description": "Proactive AI-powered phishing detection.",
   "permissions": [
     "activeTab",

@@ -19,8 +19,11 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
             
             let data = await response.json();
 
+            // CACHE THE RESULT: Prevents the popup from re-checking when opened
+            await chrome.storage.local.set({ [currentUrl]: data });
+
             // If the AI says it's phishing, forcefully redirect to the full-screen block page
-            if (data.result === "phishing") {
+                        if (data.result === "phishing" || data.result === "suspicious") {
                 let blockUrl = chrome.runtime.getURL("block.html") + 
                     "?url=" + encodeURIComponent(currentUrl) + 
                     "&confidence=" + data.confidence + 
@@ -36,10 +39,15 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
     }
 });
 
-// Listen for the "Proceed Anyway" button click from block.js
+// Listen for messages from block.js or popup.js
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === "whitelist" && message.url) {
         whitelistedUrls.add(message.url);
         chrome.tabs.update(sender.tab.id, { url: message.url }); // Send them back to the site
+    }
+    if (message.action === "report" && message.url) {
+        console.log("URL Reported as false prediction:", message.url);
+        // In a production environment, you would send this to your backend database here
+        sendResponse({ status: "reported" });
     }
 });

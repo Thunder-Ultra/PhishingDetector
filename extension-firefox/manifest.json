@@ -1,14 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "PhishGuard V2 - Firefox Shield",
-  "version": "2.1",
-  "description": "Proactive AI-powered phishing detection for Firefox.",
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "phishguard-v2@university.edu",
-      "strict_min_version": "109.0"
-    }
-  },
+  "name": "PhishGuard V2 - Auto Shield",
+  "version": "2.2",
+  "description": "Proactive AI-powered phishing detection.",
   "permissions": [
     "activeTab",
     "tabs",
@@ -19,7 +13,13 @@
     "<all_urls>"
   ],
   "background": {
-    "scripts": ["background.js"]
+    "scripts": ["background.js"] 
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "phishguard@yourdomain.com",
+      "strict_min_version": "109.0"
+    }
   },
   "action": {
     "default_popup": "popup.html"

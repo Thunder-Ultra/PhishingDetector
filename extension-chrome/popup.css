@@ -166,12 +166,13 @@ p#reason {
 /* Buttons */
 .actions {
     display: flex;
+    flex-wrap: wrap; /* Allows the 3rd button to drop to the next line */
     gap: 12px;
     margin-top: 24px;
 }
 
 button {
-    flex: 1;
+    flex: 1 1 calc(50% - 6px); /* Keeps the top two buttons side-by-side */
     padding: 12px;
     border-radius: 8px;
     font-size: 13px;
